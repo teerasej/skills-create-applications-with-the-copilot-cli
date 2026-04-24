@@ -1,4 +1,4 @@
-const { calculate, OPERATIONS } = require("../calculator");
+const { calculate, modulo, power, squareRoot, OPERATIONS } = require("../calculator");
 
 describe("calculator operations", () => {
   describe("addition", () => {
@@ -67,10 +67,56 @@ describe("calculator operations", () => {
     });
   });
 
+  describe("modulo", () => {
+    test("returns the remainder for whole numbers", () => {
+      expect(calculate("10", "%", "3")).toBe(1);
+    });
+
+    test("supports exported modulo directly", () => {
+      expect(modulo(22, 5)).toBe(2);
+    });
+
+    test("rejects modulo by zero", () => {
+      expect(() => calculate("8", "%", "0")).toThrow(
+        "Modulo by zero is not allowed.",
+      );
+    });
+  });
+
+  describe("power", () => {
+    test("raises a base to an exponent", () => {
+      expect(calculate("2", "^", "5")).toBe(32);
+    });
+
+    test("supports fractional powers", () => {
+      expect(power(81, 0.5)).toBe(9);
+    });
+  });
+
+  describe("square root", () => {
+    test("calculates square root with sqrt", () => {
+      expect(calculate("81", "sqrt")).toBe(9);
+    });
+
+    test("calculates square root with √", () => {
+      expect(calculate("49", "√")).toBe(7);
+    });
+
+    test("supports exported squareRoot directly", () => {
+      expect(squareRoot(144)).toBe(12);
+    });
+
+    test("rejects square root of a negative number", () => {
+      expect(() => calculate("-9", "sqrt")).toThrow(
+        "Square root of a negative number is not allowed.",
+      );
+    });
+  });
+
   describe("input validation", () => {
     test("rejects unsupported operators", () => {
-      expect(() => calculate("8", "%", "2")).toThrow(
-        "Unsupported operator: %. Use one of +, -, x, X, *, ×, /, ÷.",
+      expect(() => calculate("8", "invalid", "2")).toThrow(
+        "Unsupported operator: invalid. Use one of +, -, x, X, *, ×, /, ÷, %, ^, sqrt, √.",
       );
     });
 
@@ -87,13 +133,21 @@ describe("calculator operations", () => {
     });
   });
 
-  test("documents the four supported operation types", () => {
+  test("documents the supported operation types", () => {
     const supportedDescriptions = new Set(
       Object.values(OPERATIONS).map((operation) => operation.description),
     );
 
     expect(supportedDescriptions).toEqual(
-      new Set(["addition", "subtraction", "multiplication", "division"]),
+      new Set([
+        "addition",
+        "subtraction",
+        "multiplication",
+        "division",
+        "modulo",
+        "power",
+        "square root",
+      ]),
     );
   });
 });
