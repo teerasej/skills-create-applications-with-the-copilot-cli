@@ -129,17 +129,28 @@ function calculate(leftValue, operator, rightValue) {
 }
 
 function squareRoot(value) {
-  const operation = UNARY_OPERATIONS.sqrt;
+  const num = parseNumber(value, "The value");
+
+  return UNARY_OPERATIONS.sqrt.calculate(num);
+}
+
+function calculateUnary(operatorName, value) {
+  const operation = UNARY_OPERATIONS[operatorName];
+
+  if (!operation) {
+    throw new Error(`Unsupported unary operator: ${operatorName}.`);
+  }
+
   const num = parseNumber(value, "The value");
 
   return operation.calculate(num);
 }
 
 function run(argv) {
-  // Handle unary sqrt operation: sqrt <number>
+  // Handle unary operations: <operator> <number>
   if (argv.length === 2 && UNARY_OPERATIONS[argv[0]]) {
     try {
-      const result = squareRoot(argv[1]);
+      const result = calculateUnary(argv[0], argv[1]);
       console.log(result);
     } catch (error) {
       console.error(error.message);
